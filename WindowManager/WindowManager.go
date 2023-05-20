@@ -3,6 +3,7 @@ package WindowManager
 // This Package will create a window for the Application. It uses fyne.io/fyne/v2
 
 import (
+	"HEIC2JPEG/ConfigurationManager"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -12,7 +13,8 @@ import (
 )
 
 type WindowManager struct {
-	w fyne.Window
+	w  fyne.Window
+	cm ConfigurationManager.ConfigurationManager
 }
 
 var WM WindowManager
@@ -20,6 +22,7 @@ var WM WindowManager
 // init initializes the WindowManager
 func init() {
 	WM = WindowManager{}
+	WM.cm = *ConfigurationManager.New()
 }
 
 // CreateWindow creates a new Window
@@ -82,8 +85,15 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	// Under this label add the First Button to choose a HEIC File
 	btn2 := widget.NewButton("Choose a Folder", nil)
 
+	// The ConvertButton
+	convertButton := widget.NewButton("Convert", nil)
+
 	// Add it to the VBOX
 	vbox.Add(btn2)
+
+	// Add this Button to the VBOX
+	vbox.Add(convertButton)
+
 	return vbox
 }
 
@@ -95,5 +105,5 @@ func (wm *WindowManager) AboutWindow() {
 
 // setNormalSize sets the Window to the normal size
 func (wm *WindowManager) setNormalSize() {
-	wm.w.Resize(fyne.NewSize(400, 210))
+	wm.w.Resize(fyne.NewSize(400, 240))
 }
