@@ -6,11 +6,13 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
 type WindowManager struct {
+	w fyne.Window
 }
 
 var WM WindowManager
@@ -26,21 +28,32 @@ func (wm *WindowManager) CreateWindow() {
 	a := app.New()
 
 	// Set the Title of the Window
-	w := a.NewWindow("HEIC2JPEG - a HEIC to JPEG Converter")
+	wm.w = a.NewWindow("HEIC2JPEG - a HEIC to JPEG Converter")
 
 	// set size to 300 x 200
-	w.Resize(fyne.NewSize(400, 170))
+	wm.w.Resize(fyne.NewSize(400, 210))
 
 	// The app may not be resized
-	w.SetFixedSize(true)
+	wm.w.SetFixedSize(true)
 
 	// Create Labels and Buttons
-	w.SetContent(createVBOX())
+	wm.w.SetContent(createVBOX())
+
+	// Add a menubar with a Data and a About Menu
+	wm.w.SetMainMenu(fyne.NewMainMenu(
+		fyne.NewMenu("Data",
+			fyne.NewMenuItem("Options", nil), // Will open a new Window with Options
+		),
+		fyne.NewMenu("About",
+			fyne.NewMenuItem("About HEIC2JPEG", wm.AboutWindow), // Will open a new Window with Information about the App
+		),
+	))
 
 	// Center the window on the Screen
-	w.CenterOnScreen()
+	wm.w.CenterOnScreen()
+
 	// Run the Application
-	w.ShowAndRun()
+	wm.w.ShowAndRun()
 }
 
 // createVBOX creates a new VBOX
@@ -72,4 +85,10 @@ func createVBOX() *fyne.Container {
 	// Add it to the VBOX
 	vbox.Add(btn2)
 	return vbox
+}
+
+// AboutWindow will open a Popup with Information about the App
+func (wm *WindowManager) AboutWindow() {
+	dialog.ShowInformation("About HEIC2JPEG",
+		"HEIC2JPEG is a HEIC to JPEG Converter. \nIt is written in Go and uses the fyne.io/fyne/v2 Framework. \nIt is licensed under the MIT License.", wm.w)
 }
