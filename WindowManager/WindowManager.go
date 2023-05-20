@@ -31,13 +31,13 @@ func (wm *WindowManager) CreateWindow() {
 	wm.w = a.NewWindow("HEIC2JPEG - a HEIC to JPEG Converter")
 
 	// set size to 300 x 200
-	wm.w.Resize(fyne.NewSize(400, 210))
+	wm.setNormalSize()
 
 	// The app may not be resized
 	wm.w.SetFixedSize(true)
 
 	// Create Labels and Buttons
-	wm.w.SetContent(createVBOX())
+	wm.w.SetContent(wm.createVBOX())
 
 	// Add a menubar with a Data and a About Menu
 	wm.w.SetMainMenu(fyne.NewMainMenu(
@@ -57,7 +57,7 @@ func (wm *WindowManager) CreateWindow() {
 }
 
 // createVBOX creates a new VBOX
-func createVBOX() *fyne.Container {
+func (wm *WindowManager) createVBOX() *fyne.Container {
 	// Create grid layout
 	vbox := container.New(layout.NewVBoxLayout())
 
@@ -91,4 +91,9 @@ func createVBOX() *fyne.Container {
 func (wm *WindowManager) AboutWindow() {
 	dialog.ShowInformation("About HEIC2JPEG",
 		"HEIC2JPEG is a HEIC to JPEG Converter. \nIt is written in Go and uses the fyne.io/fyne/v2 Framework. \nIt is licensed under the MIT License.", wm.w)
+}
+
+// setNormalSize sets the Window to the normal size
+func (wm *WindowManager) setNormalSize() {
+	wm.w.Resize(fyne.NewSize(400, 210))
 }
