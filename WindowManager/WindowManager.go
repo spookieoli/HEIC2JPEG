@@ -52,7 +52,7 @@ func (wm *WindowManager) CreateWindow() {
 		),
 	))
 
-	// Center the window on the Screen
+	// argh fyne cannot Set the position of the window - this is bad... all you can do is center it
 	wm.w.CenterOnScreen()
 
 	// Run the Application
@@ -91,6 +91,12 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	// Add it to the VBOX
 	vbox.Add(btn2)
 
+	// Create a Progressbar
+	progressBar := widget.NewProgressBar()
+
+	// Add it to the VBOX
+	vbox.Add(progressBar)
+
 	// Add this Button to the VBOX
 	vbox.Add(convertButton)
 
@@ -105,5 +111,5 @@ func (wm *WindowManager) AboutWindow() {
 
 // setNormalSize sets the Window to the normal size
 func (wm *WindowManager) setNormalSize() {
-	wm.w.Resize(fyne.NewSize(400, 240))
+	wm.w.Resize(fyne.NewSize(400, 270))
 }

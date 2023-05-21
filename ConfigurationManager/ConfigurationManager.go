@@ -6,7 +6,7 @@ import (
 )
 
 type ConfigurationManager struct {
-	config Configuration
+	Config Configuration
 }
 
 type Configuration struct {
@@ -29,8 +29,8 @@ func New() *ConfigurationManager {
 		// If the File exists, read it
 		configuration = cm.ReadConfiguration()
 	}
-	cm.config = configuration
-	return &ConfigurationManager{config: configuration}
+	cm.Config = configuration
+	return &ConfigurationManager{Config: configuration}
 }
 
 func (c *ConfigurationManager) ReadConfiguration() Configuration {
