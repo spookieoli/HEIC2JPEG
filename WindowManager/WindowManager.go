@@ -13,8 +13,10 @@ import (
 )
 
 type WindowManager struct {
-	w  fyne.Window
-	cm ConfigurationManager.ConfigurationManager
+	w         fyne.Window
+	cm        ConfigurationManager.ConfigurationManager
+	sourceDir string
+	targetDir string
 }
 
 var WM WindowManager
@@ -71,7 +73,7 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox.Add(label)
 
 	// Under this label add the First Button to choose a HEIC File
-	btn1 := widget.NewButton("Choose a Folder with HEIC Files", nil)
+	btn1 := widget.NewButton("Choose a Folder with HEIC Files", wm.OpenSourceFileDiaglog)
 
 	// Add it to the VBOX
 	vbox.Add(btn1)
@@ -83,7 +85,7 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox.Add(label2)
 
 	// Under this label add the First Button to choose a HEIC File
-	btn2 := widget.NewButton("Choose a Folder", nil)
+	btn2 := widget.NewButton("Choose a Folder", wm.OpenTargetFileDiaglog)
 
 	// The ConvertButton
 	convertButton := widget.NewButton("Convert", nil)
@@ -111,5 +113,38 @@ func (wm *WindowManager) AboutWindow() {
 
 // setNormalSize sets the Window to the normal size
 func (wm *WindowManager) setNormalSize() {
+	wm.w.SetFixedSize(false)
 	wm.w.Resize(fyne.NewSize(400, 270))
+	wm.w.Content().Refresh()
+	wm.w.SetFixedSize(true)
+}
+
+// SetFileDialogSize sets the Window to the size of the File Dialog
+func (wm *WindowManager) SetFileDialogSize() {
+	wm.w.SetFixedSize(false)
+	wm.w.Resize(fyne.NewSize(600, 500))
+	wm.w.Content().Refresh()
+	wm.w.SetFixedSize(true)
+}
+
+// OpenSourceFileDiaglog opens a File Dialog and saves the selected Directory wm.sourceDir
+func (wm *WindowManager) OpenSourceFileDiaglog() {
+	wm.SetFileDialogSize()
+	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
+		if err == nil && list != nil {
+			wm.sourceDir = list.String()
+		}
+		wm.setNormalSize()
+	}, wm.w)
+}
+
+// OpenTargetFileDiaglog opens a File Dialog and saves the selected Directory wm.targetDir
+func (wm *WindowManager) OpenTargetFileDiaglog() {
+	wm.SetFileDialogSize()
+	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
+		if err == nil && list != nil {
+			wm.targetDir = list.String()
+		}
+		wm.setNormalSize()
+	}, wm.w)
 }
