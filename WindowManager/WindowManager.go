@@ -44,7 +44,7 @@ func (wm *WindowManager) CreateWindow() {
 	// Create Labels and Buttons
 	wm.w.SetContent(wm.createVBOX())
 
-	// Add a menubar with a Data and a About Menu
+	// Add a menubar with a Data and an About Menu
 	wm.w.SetMainMenu(fyne.NewMainMenu(
 		fyne.NewMenu("Data",
 			fyne.NewMenuItem("Options", nil), // Will open a new Window with Options
@@ -119,8 +119,8 @@ func (wm *WindowManager) setNormalSize() {
 	wm.w.SetFixedSize(true)
 }
 
-// SetFileDialogSize sets the Window to the size of the File Dialog
-func (wm *WindowManager) SetFileDialogSize() {
+// setFileDialogSize sets the Window to the size of the File Dialog
+func (wm *WindowManager) setFileDialogSize() {
 	wm.w.SetFixedSize(false)
 	wm.w.Resize(fyne.NewSize(600, 500))
 	wm.w.Content().Refresh()
@@ -129,10 +129,11 @@ func (wm *WindowManager) SetFileDialogSize() {
 
 // OpenSourceFileDiaglog opens a File Dialog and saves the selected Directory wm.sourceDir
 func (wm *WindowManager) OpenSourceFileDiaglog() {
-	wm.SetFileDialogSize()
+	wm.setFileDialogSize()
 	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
 		if err == nil && list != nil {
 			wm.sourceDir = list.String()
+			wm.cm.Config.SourceDir = wm.sourceDir
 		}
 		wm.setNormalSize()
 	}, wm.w)
@@ -140,10 +141,11 @@ func (wm *WindowManager) OpenSourceFileDiaglog() {
 
 // OpenTargetFileDiaglog opens a File Dialog and saves the selected Directory wm.targetDir
 func (wm *WindowManager) OpenTargetFileDiaglog() {
-	wm.SetFileDialogSize()
+	wm.setFileDialogSize()
 	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
 		if err == nil && list != nil {
 			wm.targetDir = list.String()
+			wm.cm.Config.TargetDir = wm.targetDir
 		}
 		wm.setNormalSize()
 	}, wm.w)

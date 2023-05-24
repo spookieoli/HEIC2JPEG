@@ -75,3 +75,19 @@ func (c *ConfigurationManager) createNewConfiguration() Configuration {
 	}
 	return configuration
 }
+
+// WriteConfiguration writes the Configuration to the config.json File
+func (c *ConfigurationManager) WriteConfiguration() {
+	// Open the File
+	file, err := os.Open("config.json")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	// Write the Configuration to the File
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(c.Config)
+	if err != nil {
+		panic(err)
+	}
+}
