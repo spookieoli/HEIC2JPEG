@@ -1,2 +1,2 @@
 # HEIC2JPEG
-A heic 2 jpec converter
+A heic 2 jpeg converter
