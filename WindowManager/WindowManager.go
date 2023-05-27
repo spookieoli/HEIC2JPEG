@@ -13,10 +13,11 @@ import (
 )
 
 type WindowManager struct {
-	w         fyne.Window
-	cm        ConfigurationManager.ConfigurationManager
-	sourceDir string
-	targetDir string
+	w              fyne.Window
+	cm             ConfigurationManager.ConfigurationManager
+	sourceDir      string
+	targetDir      string
+	label1, label2 *widget.Label
 }
 
 var WM WindowManager
@@ -67,10 +68,10 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox := container.New(layout.NewVBoxLayout())
 
 	// Create a Label with the Text "Choose a HEIC File to convert"
-	label := widget.NewLabel("Choose a HEIC File to convert")
+	wm.label1 = widget.NewLabel("Choose a HEIC File to convert")
 
 	// Add the label to the Window
-	vbox.Add(label)
+	vbox.Add(wm.label1)
 
 	// Under this label add the First Button to choose a HEIC File
 	btn1 := widget.NewButton("Choose a Folder with HEIC Files", wm.OpenSourceFileDiaglog)
@@ -79,10 +80,10 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox.Add(btn1)
 
 	// Create a Label with the Text "Choose a HEIC File to convert"
-	label2 := widget.NewLabel("Choose a Destination Folder")
+	wm.label2 = widget.NewLabel("Choose a Destination Folder")
 
 	// Add the label to the Window
-	vbox.Add(label2)
+	vbox.Add(wm.label2)
 
 	// Under this label add the First Button to choose a HEIC File
 	btn2 := widget.NewButton("Choose a Folder", wm.OpenTargetFileDiaglog)
@@ -134,6 +135,8 @@ func (wm *WindowManager) OpenSourceFileDiaglog() {
 		if err == nil && list != nil {
 			wm.sourceDir = list.String()
 			wm.cm.Config.SourceDir = wm.sourceDir
+			wm.label1.SetText(wm.sourceDir)
+			wm.w.Content().Refresh()
 		}
 		wm.setNormalSize()
 	}, wm.w)
@@ -146,6 +149,9 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 		if err == nil && list != nil {
 			wm.targetDir = list.String()
 			wm.cm.Config.TargetDir = wm.targetDir
+			// Set the label of the gui to the selected directory
+			wm.label2.SetText(wm.targetDir)
+			wm.w.Content().Refresh()
 		}
 		wm.setNormalSize()
 	}, wm.w)
