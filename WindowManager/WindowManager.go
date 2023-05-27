@@ -18,6 +18,7 @@ type WindowManager struct {
 	sourceDir      string
 	targetDir      string
 	label1, label2 *widget.Label
+	progressbar    *widget.ProgressBar
 }
 
 var WM WindowManager
@@ -95,10 +96,10 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox.Add(btn2)
 
 	// Create a Progressbar
-	progressBar := widget.NewProgressBar()
+	wm.progressbar = widget.NewProgressBar()
 
 	// Add it to the VBOX
-	vbox.Add(progressBar)
+	vbox.Add(wm.progressbar)
 
 	// Add this Button to the VBOX
 	vbox.Add(convertButton)
