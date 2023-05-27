@@ -14,6 +14,7 @@ type Configuration struct {
 	PosY      int    `json:"pos_y"`
 	SourceDir string `json:"source_dir"`
 	TargetDir string `json:"target_dir"`
+	Worker    int    `json:"worker"`
 }
 
 // Create a new ConfigurationManager
@@ -66,6 +67,7 @@ func (c *ConfigurationManager) createNewConfiguration() Configuration {
 	configuration.PosY = 0
 	configuration.SourceDir = ""
 	configuration.TargetDir = ""
+	configuration.Worker = 1
 
 	// Write the Configuration to the File
 	encoder := json.NewEncoder(file)
