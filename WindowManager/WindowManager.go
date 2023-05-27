@@ -135,7 +135,11 @@ func (wm *WindowManager) OpenSourceFileDiaglog() {
 		if err == nil && list != nil {
 			wm.sourceDir = list.String()
 			wm.cm.Config.SourceDir = wm.sourceDir
-			wm.label1.SetText(wm.sourceDir)
+			// If the sourcedir path is to long cut it to only 30 chars
+			if len(wm.sourceDir) > 30 {
+				wm.sourceDir = wm.sourceDir[len(wm.sourceDir)-30:]
+			}
+			wm.label1.SetText("... " + wm.sourceDir)
 			wm.w.Content().Refresh()
 		}
 		wm.setNormalSize()
@@ -149,8 +153,10 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 		if err == nil && list != nil {
 			wm.targetDir = list.String()
 			wm.cm.Config.TargetDir = wm.targetDir
-			// Set the label of the gui to the selected directory
-			wm.label2.SetText(wm.targetDir)
+			if len(wm.sourceDir) > 30 {
+				wm.targetDir = wm.targetDir[len(wm.targetDir)-30:]
+			}
+			wm.label2.SetText("..." + wm.targetDir)
 			wm.w.Content().Refresh()
 		}
 		wm.setNormalSize()
