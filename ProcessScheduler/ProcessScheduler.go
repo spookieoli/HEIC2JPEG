@@ -2,6 +2,7 @@ package ProcessScheduler
 
 import (
 	"fyne.io/fyne/v2/widget"
+	"os"
 	"strings"
 	"sync"
 )
@@ -14,6 +15,7 @@ type ProcessScheduler struct {
 	out                  chan bool
 	worker               int
 	numFiles             int
+	errors               int
 }
 
 func New(sourceDir, targetDir string, progressbar *widget.ProgressBar) *ProcessScheduler {
@@ -24,6 +26,7 @@ func New(sourceDir, targetDir string, progressbar *widget.ProgressBar) *ProcessS
 	ps.progressbar = progressbar
 	ps.in = make(chan string)
 	ps.out = make(chan bool)
+	ps.countHEICFiles()
 	// TODO: Create function that will check how many files to be converted
 	return &ps
 }
@@ -37,7 +40,7 @@ func (ps *ProcessScheduler) Start() {
 		go ps.Worker()
 	}
 
-	// There is only one Process that will catch the callsbacks from the Workers to increade the progressbar
+	// There is only one Process that will catch the callbacks from the Workers to increase the progressbar
 	wg.Add(1)
 	go ps.CallBack(&wg)
 	wg.Wait()
@@ -62,9 +65,13 @@ func (ps *ProcessScheduler) Worker() {
 // CallBack will be called from the Workers to increase the progressbar
 func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 	files := 0
-	for _ = range ps.out {
+	for b := range ps.out {
 		// Increase the progressbar
-		ps.progressbar.SetValue(ps.progressbar.Value + 1)
+		if b == true {
+			ps.progressbar.SetValue(ps.progressbar.Value + 1)
+		} else {
+			ps.errors += 1
+		}
 		files += 1
 		// Check if all files are converted
 		if files == ps.numFiles {
@@ -85,4 +92,20 @@ func (ps *ProcessScheduler) isHEIC(file string) bool {
 		return true
 	}
 	return false
+}
+
+// countHEICFiles will count the heicfiles in the given directory
+func (ps *ProcessScheduler) countHEICFiles() {
+	// open the sourcedir
+	dirEntry, err := os.ReadDir(ps.sourceDir)
+	if err != nil {
+		panic(err)
+	}
+	// Loop through the files
+	for _, file := range dirEntry {
+		// Check if the file is HEIC
+		if ps.isHEIC(file.Name()) {
+			ps.numFiles += 1
+		}
+	}
 }
