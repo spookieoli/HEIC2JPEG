@@ -19,6 +19,7 @@ type WindowManager struct {
 	targetDir      string
 	label1, label2 *widget.Label
 	progressbar    *widget.ProgressBar
+	convertButton  *widget.Button
 }
 
 var WM WindowManager
@@ -61,6 +62,7 @@ func (wm *WindowManager) CreateWindow() {
 
 	// Run the Application
 	wm.w.ShowAndRun()
+
 }
 
 // createVBOX creates a new VBOX
@@ -90,7 +92,7 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	btn2 := widget.NewButton("Choose a Folder", wm.OpenTargetFileDiaglog)
 
 	// The ConvertButton
-	convertButton := widget.NewButton("Convert", nil)
+	wm.convertButton = widget.NewButton("Convert", wm.Convert)
 
 	// Add it to the VBOX
 	vbox.Add(btn2)
@@ -102,7 +104,7 @@ func (wm *WindowManager) createVBOX() *fyne.Container {
 	vbox.Add(wm.progressbar)
 
 	// Add this Button to the VBOX
-	vbox.Add(convertButton)
+	vbox.Add(wm.convertButton)
 
 	return vbox
 }
@@ -162,4 +164,9 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 		}
 		wm.setNormalSize()
 	}, wm.w)
+}
+
+// Convert will start the conversion
+func (wm *WindowManager) Convert() {
+	wm.cm.WriteConfiguration()
 }

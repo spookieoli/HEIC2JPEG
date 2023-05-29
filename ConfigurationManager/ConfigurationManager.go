@@ -2,6 +2,7 @@ package ConfigurationManager
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -60,7 +61,12 @@ func (c *ConfigurationManager) createNewConfiguration() Configuration {
 	if err != nil {
 		panic(err)
 	}
-	defer file.Close()
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("Cannot close File")
+		}
+	}()
 
 	// Create a new Configuration
 	configuration.PosX = 0
@@ -81,7 +87,7 @@ func (c *ConfigurationManager) createNewConfiguration() Configuration {
 // WriteConfiguration writes the Configuration to the config.json File
 func (c *ConfigurationManager) WriteConfiguration() {
 	// Open the File
-	file, err := os.Open("config.json")
+	file, err := os.OpenFile("config.json", os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
 	}
