@@ -4,6 +4,7 @@ package WindowManager
 
 import (
 	"HEIC2JPEG/ConfigurationManager"
+	"HEIC2JPEG/ProcessScheduler"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -169,4 +170,10 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 // Convert will start the conversion
 func (wm *WindowManager) Convert() {
 	wm.cm.WriteConfiguration()
+	// Create the ProcessScheduler
+	ps := ProcessScheduler.New(wm.sourceDir, wm.targetDir, wm.progressbar, wm.cm.Config.Worker)
+	// deactivate the buttons
+	wm.convertButton.Disable()
+	// Start the ProcessScheduler
+	ps.Start()
 }

@@ -15,10 +15,11 @@ type ProcessScheduler struct {
 	out                  chan bool
 	worker               int
 	numFiles             int
+	Files                []string
 	errors               int
 }
 
-func New(sourceDir, targetDir string, progressbar *widget.ProgressBar) *ProcessScheduler {
+func New(sourceDir, targetDir string, progressbar *widget.ProgressBar, worker int) *ProcessScheduler {
 	// Vars
 	ps := ProcessScheduler{}
 	ps.sourceDir = sourceDir
@@ -26,8 +27,8 @@ func New(sourceDir, targetDir string, progressbar *widget.ProgressBar) *ProcessS
 	ps.progressbar = progressbar
 	ps.in = make(chan string)
 	ps.out = make(chan bool)
+	ps.worker = worker
 	ps.countHEICFiles()
-	// TODO: Create function that will check how many files to be converted
 	return &ps
 }
 
@@ -38,6 +39,10 @@ func (ps *ProcessScheduler) Start() {
 	// Start the Workers
 	for i := 0; i < ps.worker; i++ {
 		go ps.Worker()
+	}
+	// Add all Files to the in channel
+	for _, file := range ps.Files {
+		ps.in <- file
 	}
 
 	// There is only one Process that will catch the callbacks from the Workers to increase the progressbar
@@ -58,6 +63,8 @@ func (ps *ProcessScheduler) Worker() {
 		if ps.isHEIC(file) {
 			// Convert the file
 			//ps.convert(file)
+			// Increase the progressbar
+			ps.out <- true
 		}
 	}
 }
@@ -75,7 +82,7 @@ func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 		files += 1
 		// Check if all files are converted
 		if files == ps.numFiles {
-			// Close the in channel
+			// Close the in channel, this will break the loop in the Workers and stop them
 			close(ps.in)
 			// Close the out channel
 			close(ps.out)
@@ -106,6 +113,8 @@ func (ps *ProcessScheduler) countHEICFiles() {
 		// Check if the file is HEIC
 		if ps.isHEIC(file.Name()) {
 			ps.numFiles += 1
+			// Add the complete Filepath to the Files
+			ps.Files = append(ps.Files, ps.sourceDir+"/"+file.Name())
 		}
 	}
 }
