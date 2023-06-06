@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"strings"
 )
 
 type WindowManager struct {
@@ -137,7 +138,8 @@ func (wm *WindowManager) OpenSourceFileDiaglog() {
 	wm.setFileDialogSize()
 	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
 		if err == nil && list != nil {
-			wm.sourceDir = list.String()
+			// remove file:// from the string
+			wm.sourceDir = strings.Replace(list.String(), "file://", "", 1)
 			wm.cm.Config.SourceDir = wm.sourceDir
 			// If the sourcedir path is to long cut it to only 30 chars
 			if len(wm.sourceDir) > 30 {
@@ -155,7 +157,8 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 	wm.setFileDialogSize()
 	dialog.ShowFolderOpen(func(list fyne.ListableURI, err error) {
 		if err == nil && list != nil {
-			wm.targetDir = list.String()
+			// remove file:// from the string
+			wm.targetDir = strings.Replace(list.String(), "file://", "", 1)
 			wm.cm.Config.TargetDir = wm.targetDir
 			if len(wm.sourceDir) > 30 {
 				wm.targetDir = wm.targetDir[len(wm.targetDir)-30:]
@@ -176,4 +179,6 @@ func (wm *WindowManager) Convert() {
 	wm.convertButton.Disable()
 	// Start the ProcessScheduler
 	ps.Start()
+	// after the ProcessScheduler has finished, activate the buttons
+	wm.convertButton.Enable()
 }

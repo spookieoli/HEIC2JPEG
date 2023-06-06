@@ -2,7 +2,10 @@ module HEIC2JPEG
 
 go 1.19
 
-require fyne.io/fyne/v2 v2.3.4
+require (
+	fyne.io/fyne/v2 v2.3.4
+	github.com/jdeng/goheif v0.0.0-20200323230657-a0d6a8b3e68f
+)
 
 require (
 	fyne.io/systray v1.10.1-0.20230403195833-7dc3c09283d6 // indirect
@@ -20,6 +23,7 @@ require (
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/jsummers/gobmp v0.0.0-20151104160322-e2ba15ffa76e // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/rwcarlsen/goexif v0.0.0-20190401172101-9e8deecbddbd // indirect
 	github.com/srwiley/oksvg v0.0.0-20220731023508-a61f04f16b76 // indirect
 	github.com/srwiley/rasterx v0.0.0-20210519020934-456a8d69b780 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect

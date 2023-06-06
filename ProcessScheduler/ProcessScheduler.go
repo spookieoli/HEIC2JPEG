@@ -1,7 +1,10 @@
 package ProcessScheduler
 
 import (
+	"fmt"
 	"fyne.io/fyne/v2/widget"
+	"github.com/jdeng/goheif"
+	_ "github.com/jdeng/goheif"
 	"os"
 	"strings"
 	"sync"
@@ -55,14 +58,15 @@ func (ps *ProcessScheduler) Start() {
 func (ps *ProcessScheduler) Worker() {
 	// Vars
 	var file string
-	// Loop
+	// Loop through the in channel
+	fmt.Println("Worker started")
 	for {
 		// Get the file
 		file = <-ps.in
 		// Check if the file is HEIC
 		if ps.isHEIC(file) {
 			// Convert the file
-			//ps.convert(file)
+			ps.convert(file)
 			// Increase the progressbar
 			ps.out <- true
 		}
@@ -117,4 +121,21 @@ func (ps *ProcessScheduler) countHEICFiles() {
 			ps.Files = append(ps.Files, ps.sourceDir+"/"+file.Name())
 		}
 	}
+}
+
+// This Function will convert the given file
+func (ps *ProcessScheduler) convert(file string) {
+	// open the given file
+	f, err := os.Open(file)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	// Check if there is a EXIF in the file
+	exif, err := goheif.ExtractExif(f)
+	if err != nil {
+		panic(err)
+	}
+	// TODO: go on with encoding
+
 }
