@@ -12,6 +12,7 @@ import (
 	"sync"
 )
 
+// The ProcessScheduler will schedule the conversion of the HEIC Files to JPEG Files
 type ProcessScheduler struct {
 	// Vars
 	sourceDir, targetDir string
