@@ -1,10 +1,12 @@
 package ProcessScheduler
 
 import (
+	utils2 "HEIC2JPEG/utils"
 	"fmt"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jdeng/goheif"
 	_ "github.com/jdeng/goheif"
+	"image/jpeg"
 	"os"
 	"strings"
 	"sync"
@@ -136,6 +138,23 @@ func (ps *ProcessScheduler) convert(file string) {
 	if err != nil {
 		panic(err)
 	}
-	// TODO: go on with encoding
+	// Decode the HEIC
+	img, err := goheif.Decode(f)
+	if err != nil {
+		panic(err)
+	}
+	// Create the Output writer
+	o, err := os.OpenFile(ps.targetDir+"/"+file[len(ps.sourceDir)+1:len(file)-5]+".jpg", os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer o.Close()
 
+	// Create new utils Object
+	utils, err := utils2.New(o, exif)
+	// jpeg encode the image
+	err = jpeg.Encode(utils, img, nil)
+	if err != nil {
+		panic(err)
+	}
 }
