@@ -2,7 +2,6 @@ package ProcessScheduler
 
 import (
 	utils2 "HEIC2JPEG/utils"
-	"fmt"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jdeng/goheif"
 	_ "github.com/jdeng/goheif"
