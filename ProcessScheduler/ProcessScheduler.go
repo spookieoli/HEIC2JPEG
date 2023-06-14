@@ -58,12 +58,9 @@ func (ps *ProcessScheduler) Start() {
 }
 
 func (ps *ProcessScheduler) Worker() {
-	// Vars
-	var file string
-	// Loop through the in channel
-	for {
+	for file := range ps.in {
 		// Get the file
-		file = <-ps.in
+
 		// Check if the file is HEIC
 		if ps.isHEIC(file) {
 			// Convert the file
