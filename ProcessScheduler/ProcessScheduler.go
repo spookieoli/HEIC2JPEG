@@ -85,7 +85,6 @@ func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 			ps.errors += 1
 		}
 		files += 1
-		fmt.Println("Files: ", files, "NumFiles: ", ps.numFiles)
 		// Check if all files are converted
 		if files == ps.numFiles {
 			// Close the in channel, this will break the loop in the Workers and stop them
