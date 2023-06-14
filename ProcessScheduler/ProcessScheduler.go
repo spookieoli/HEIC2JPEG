@@ -2,7 +2,6 @@ package ProcessScheduler
 
 import (
 	utils2 "HEIC2JPEG/utils"
-	"fmt"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jdeng/goheif"
 	_ "github.com/jdeng/goheif"
@@ -62,7 +61,6 @@ func (ps *ProcessScheduler) Worker() {
 	// Vars
 	var file string
 	// Loop through the in channel
-	fmt.Println("Worker started")
 	for {
 		// Get the file
 		file = <-ps.in
@@ -102,7 +100,7 @@ func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 
 // isHEIC if file is HEIC
 func (ps *ProcessScheduler) isHEIC(file string) bool {
-	if strings.ToLower(file[len(file)-5:]) == ".heic" {
+	if len(file) > 5 && strings.ToLower(file[len(file)-5:]) == ".heic" {
 		return true
 	}
 	return false
