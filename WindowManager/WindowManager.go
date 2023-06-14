@@ -117,6 +117,12 @@ func (wm *WindowManager) AboutWindow() {
 		"HEIC2JPEG is a HEIC to JPEG Converter. \nIt is written in Go and uses the fyne.io/fyne/v2 Framework. \nIt is licensed under the MIT License.", wm.w)
 }
 
+// DoneWindow will show a Popup when the Conversion is done
+func (wm *WindowManager) DoneWindow() {
+	dialog.ShowInformation("Done",
+		"Conversion is done.", wm.w)
+}
+
 // setNormalSize sets the Window to the normal size
 func (wm *WindowManager) setNormalSize() {
 	wm.w.SetFixedSize(false)
@@ -181,4 +187,5 @@ func (wm *WindowManager) Convert() {
 	ps.Start()
 	// after the ProcessScheduler has finished, activate the buttons
 	wm.convertButton.Enable()
+	wm.DoneWindow()
 }
