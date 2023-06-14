@@ -68,7 +68,6 @@ func (ps *ProcessScheduler) Worker() {
 			ps.convert(file)
 			// Increase the progressbar
 			ps.out <- true
-			fmt.Println("Getting more Data")
 		}
 	}
 }
