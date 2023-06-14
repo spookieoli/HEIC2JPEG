@@ -2,6 +2,7 @@ package ProcessScheduler
 
 import (
 	utils2 "HEIC2JPEG/utils"
+	"fmt"
 	"fyne.io/fyne/v2/widget"
 	"github.com/jdeng/goheif"
 	_ "github.com/jdeng/goheif"
@@ -45,16 +46,16 @@ func (ps *ProcessScheduler) Start() {
 	for i := 0; i < ps.worker; i++ {
 		go ps.Worker()
 	}
+	// There is only one Process that will catch the callbacks from the Workers to increase the progressbar
+	wg.Add(1)
+	go ps.CallBack(&wg)
+
 	// Add all Files to the in channel
 	for _, file := range ps.Files {
 		ps.in <- file
 	}
-
-	// There is only one Process that will catch the callbacks from the Workers to increase the progressbar
-	wg.Add(1)
-	go ps.CallBack(&wg)
+	// Wait for the final Worker to finish
 	wg.Wait()
-
 }
 
 func (ps *ProcessScheduler) Worker() {
@@ -67,6 +68,7 @@ func (ps *ProcessScheduler) Worker() {
 			ps.convert(file)
 			// Increase the progressbar
 			ps.out <- true
+			fmt.Println("Getting more Data")
 		}
 	}
 }
@@ -74,14 +76,16 @@ func (ps *ProcessScheduler) Worker() {
 // CallBack will be called from the Workers to increase the progressbar
 func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 	files := 0
-	for b := range ps.out {
+	for {
 		// Increase the progressbar
+		b := <-ps.out
 		if b == true {
 			ps.progressbar.SetValue(ps.progressbar.Value + 1)
 		} else {
 			ps.errors += 1
 		}
 		files += 1
+		fmt.Println("Files: ", files, "NumFiles: ", ps.numFiles)
 		// Check if all files are converted
 		if files == ps.numFiles {
 			// Close the in channel, this will break the loop in the Workers and stop them
