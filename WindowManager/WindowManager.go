@@ -179,6 +179,8 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 // Convert will start the conversion
 func (wm *WindowManager) Convert() {
 	wm.cm.WriteConfiguration()
+	// Set the Progressbar to 0
+	wm.progressbar.SetValue(0)
 	// Create the ProcessScheduler
 	ps := ProcessScheduler.New(wm.sourceDir, wm.targetDir, wm.progressbar, wm.cm.Config.Worker)
 	// deactivate the buttons
