@@ -11,6 +11,7 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"strconv"
 	"strings"
 )
 
@@ -53,7 +54,7 @@ func (wm *WindowManager) CreateWindow() {
 	// Add a menubar with a Data and an About Menu
 	wm.w.SetMainMenu(fyne.NewMainMenu(
 		fyne.NewMenu("Data",
-			fyne.NewMenuItem("Options", nil), // Will open a new Window with Options
+			fyne.NewMenuItem("Options", wm.OptionsWindow), // Will open a new Window with Options
 		),
 		fyne.NewMenu("About",
 			fyne.NewMenuItem("About HEIC2JPEG", wm.AboutWindow), // Will open a new Window with Information about the App
@@ -134,6 +135,55 @@ func (wm *WindowManager) DoneWindow() {
 func (wm *WindowManager) ErrorView() {
 	dialog.ShowInformation("Error",
 		"An Error occured: "+wm.Errtxt, wm.w)
+}
+
+// OptionsWindow will open a new Window where the User can set Options
+func (wm *WindowManager) OptionsWindow() {
+	// Create a new Window
+	w := fyne.CurrentApp().NewWindow("Options")
+
+	// Set the size to 300 x 200
+	w.Resize(fyne.NewSize(300, 200))
+
+	// Create a new VBOX
+	vbox := container.New(layout.NewVBoxLayout())
+
+	// Create a new Label
+	label := widget.NewLabel("Options")
+
+	// Add the Label to the VBOX
+	vbox.Add(label)
+
+	// Add a box where the User can set the Worker Count
+	workerCount := widget.NewEntry()
+	// Convert the int to a string
+	s := strconv.Itoa(wm.cm.Config.Worker)
+	workerCount.SetText(s)
+
+	// Add the Entry to the VBOX
+	vbox.Add(workerCount)
+
+	// Add a button to save the Options
+	saveButton := widget.NewButton("Save", func() {
+		// Convert s to int
+		i, err := strconv.Atoi(workerCount.Text)
+		if err != nil {
+			// Error
+			wm.Errtxt = err.Error()
+			wm.ErrorView()
+		}
+		wm.cm.Config.Worker = i
+		w.Close()
+	})
+
+	// Add the Button to the VBOX
+	vbox.Add(saveButton)
+
+	// Add the VBOX to the Window
+	w.SetContent(vbox)
+
+	// Show the Window
+	w.Show()
 }
 
 // setNormalSize sets the Window to the normal size
