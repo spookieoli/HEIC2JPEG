@@ -22,6 +22,7 @@ type WindowManager struct {
 	label1, label2 *widget.Label
 	progressbar    *widget.ProgressBar
 	convertButton  *widget.Button
+	Errtxt         string
 }
 
 var WM WindowManager
@@ -65,6 +66,8 @@ func (wm *WindowManager) CreateWindow() {
 	// Set the Labels to the last used values
 	wm.label1.SetText(wm.cm.Config.SourceDir)
 	wm.label2.SetText(wm.cm.Config.TargetDir)
+	wm.sourceDir = wm.cm.Config.SourceDir
+	wm.targetDir = wm.cm.Config.TargetDir
 
 	// Run the Application
 	wm.w.ShowAndRun()
@@ -127,6 +130,12 @@ func (wm *WindowManager) DoneWindow() {
 		"Conversion is done.", wm.w)
 }
 
+// ErrorViwe will show a Popup when an Error occurs
+func (wm *WindowManager) ErrorView() {
+	dialog.ShowInformation("Error",
+		"An Error occured: "+wm.Errtxt, wm.w)
+}
+
 // setNormalSize sets the Window to the normal size
 func (wm *WindowManager) setNormalSize() {
 	wm.w.SetFixedSize(false)
@@ -182,6 +191,11 @@ func (wm *WindowManager) OpenTargetFileDiaglog() {
 
 // Convert will start the conversion
 func (wm *WindowManager) Convert() {
+	if wm.sourceDir == "" || wm.targetDir == "" {
+		wm.Errtxt = "Please choose a Source and a Target Folder"
+		wm.ErrorView()
+		return
+	}
 	wm.cm.WriteConfiguration()
 	// Set the Progressbar to 0
 	wm.progressbar.SetValue(0)
