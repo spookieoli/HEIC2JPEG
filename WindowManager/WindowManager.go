@@ -62,6 +62,10 @@ func (wm *WindowManager) CreateWindow() {
 	// argh fyne cannot Set the position of the window - this is bad... all you can do is center it
 	wm.w.CenterOnScreen()
 
+	// Set the Labels to the last used values
+	wm.label1.SetText(wm.cm.Config.SourceDir)
+	wm.label2.SetText(wm.cm.Config.TargetDir)
+
 	// Run the Application
 	wm.w.ShowAndRun()
 
