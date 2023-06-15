@@ -1,6 +1,8 @@
 package utils
 
-import "io"
+import (
+	"io"
+)
 
 type Utils struct {
 	w    io.Writer
@@ -39,7 +41,9 @@ func (u *Utils) Write(data []byte) (n int, err error) {
 		return dataLen, nil
 	}
 
-	n, err = u.w.Write(data[u.Skip:])
+	if u.Skip > 0 {
+		n, err = u.w.Write(data[u.Skip:])
+	}
 	n += u.Skip
 	u.Skip = 0
 	return n, err

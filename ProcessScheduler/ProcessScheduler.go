@@ -78,13 +78,15 @@ func (ps *ProcessScheduler) CallBack(wg *sync.WaitGroup) {
 		// Increase the progressbar
 		b := <-ps.out
 		if b == true {
-			ps.progressbar.SetValue(ps.progressbar.Value + 1)
+			ps.progressbar.SetValue(float64(files) / float64(ps.numFiles))
 		} else {
 			ps.errors += 1
 		}
 		files += 1
 		// Check if all files are converted
 		if files == ps.numFiles {
+			// Set progressbar to 100%
+			ps.progressbar.SetValue(1)
 			// Close the in channel, this will break the loop in the Workers and stop them
 			close(ps.in)
 			// Close the out channel
