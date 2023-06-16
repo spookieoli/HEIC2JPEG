@@ -129,23 +129,26 @@ func (ps *ProcessScheduler) convert(file string) {
 	// open the given file
 	f, err := os.Open(file)
 	if err != nil {
-		panic(err)
+		ps.out <- false
+		return
 	}
 	defer f.Close()
 	// Check if there is a EXIF in the file
 	exif, err := goheif.ExtractExif(f)
 	if err != nil {
-		panic(err)
+		ps.out <- false
 	}
 	// Decode the HEIC
 	img, err := goheif.Decode(f)
 	if err != nil {
-		panic(err)
+		ps.out <- false
+		return
 	}
 	// Create the Output writer
 	o, err := os.OpenFile(ps.targetDir+"/"+file[len(ps.sourceDir)+1:len(file)-5]+".jpg", os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		panic(err)
+		ps.out <- false
+		return
 	}
 	defer o.Close()
 
@@ -154,6 +157,7 @@ func (ps *ProcessScheduler) convert(file string) {
 	// jpeg encode the image
 	err = jpeg.Encode(utils, img, nil)
 	if err != nil {
-		panic(err)
+		ps.out <- false
+		return
 	}
 }
