@@ -11,6 +11,9 @@ import (
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
+	"io"
+	"log"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -41,6 +44,9 @@ func (wm *WindowManager) CreateWindow() {
 
 	// Set the Title of the Window
 	wm.w = a.NewWindow("HEIC2JPEG - a HEIC to JPEG Converter")
+
+	// Set an AppIcon
+	wm.w.SetIcon(fyne.NewStaticResource("heic2jpeg.png", wm.ReadPng("heic2jpeg.png")))
 
 	// set size to 300 x 200
 	wm.setNormalSize()
@@ -258,4 +264,18 @@ func (wm *WindowManager) Convert() {
 	// after the ProcessScheduler has finished, activate the buttons
 	wm.convertButton.Enable()
 	wm.DoneWindow()
+}
+
+func (wm *WindowManager) ReadPng(f string) []byte {
+	file, err := os.Open(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	data, err := io.ReadAll(file)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return data
 }
